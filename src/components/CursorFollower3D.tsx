@@ -12,6 +12,7 @@ const CursorFollower3D: React.FC = () => {
   const mousePosition = useRef({ x: 0, y: 0 });
   const [isVisible, setIsVisible] = useState(true);
   const [webGLFailed, setWebGLFailed] = useState(false);
+  const initializedRef = useRef(false);
 
   // Custom WebGL availability check
   const isWebGLAvailable = () => {
@@ -28,6 +29,10 @@ const CursorFollower3D: React.FC = () => {
 
   useEffect(() => {
     if (!mountRef.current) return;
+
+    // Prevent multiple initialization attempts
+    if (initializedRef.current) return;
+    initializedRef.current = true;
 
     // Check if WebGL is available before attempting to create renderer
     if (!isWebGLAvailable()) {
