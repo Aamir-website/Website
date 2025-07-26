@@ -1,5 +1,6 @@
 import React, { useRef, useEffect, useState } from 'react';
 import * as THREE from 'three';
+import { WebGL } from 'three/examples/jsm/capabilities/WebGL.js';
 
 const CursorFollower3D: React.FC = () => {
   const mountRef = useRef<HTMLDivElement>(null);
@@ -15,6 +16,13 @@ const CursorFollower3D: React.FC = () => {
 
   useEffect(() => {
     if (!mountRef.current) return;
+
+    // Check if WebGL is available before attempting to create renderer
+    if (!WebGL.isWebGLAvailable()) {
+      console.warn('WebGL is not available on this device');
+      setWebGLFailed(true);
+      return;
+    }
 
     try {
     // Scene setup
