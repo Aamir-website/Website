@@ -14,14 +14,13 @@ const CursorFollower3D: React.FC = () => {
   const [webGLFailed, setWebGLFailed] = useState(false);
   const initializedRef = useRef(false);
 
-  // Custom WebGL availability check
-  const isWebGLAvailable = () => {
+  // Robust WebGL availability check that tests Three.js WebGLRenderer
+  const isWebGLAvailableAndFunctional = () => {
     try {
-      const canvas = document.createElement('canvas');
-      return !!(window.WebGLRenderingContext && (
-        canvas.getContext('webgl') || 
-        canvas.getContext('experimental-webgl')
-      ));
+      // Test if we can actually create a WebGLRenderer
+      const testRenderer = new THREE.WebGLRenderer({ alpha: true });
+      testRenderer.dispose();
+      return true;
     } catch (e) {
       return false;
     }
@@ -35,7 +34,7 @@ const CursorFollower3D: React.FC = () => {
     initializedRef.current = true;
 
     // Check if WebGL is available before attempting to create renderer
-    if (!isWebGLAvailable()) {
+    if (!isWebGLAvailableAndFunctional()) {
       console.warn('WebGL is not available on this device');
       setWebGLFailed(true);
       return;
