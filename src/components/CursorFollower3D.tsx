@@ -11,10 +11,12 @@ const CursorFollower3D: React.FC = () => {
   const eyesRef = useRef<THREE.Group>();
   const mousePosition = useRef({ x: 0, y: 0 });
   const [isVisible, setIsVisible] = useState(true);
+  const [webGLFailed, setWebGLFailed] = useState(false);
 
   useEffect(() => {
     if (!mountRef.current) return;
 
+    try {
     // Scene setup
     const scene = new THREE.Scene();
     sceneRef.current = scene;
@@ -33,6 +35,11 @@ const CursorFollower3D: React.FC = () => {
     rendererRef.current = renderer;
 
     mountRef.current.appendChild(renderer.domElement);
+    } catch (error) {
+      console.warn('WebGL not supported or failed to initialize:', error);
+      setWebGLFailed(true);
+      return;
+    }
 
     // Lighting
     const ambientLight = new THREE.AmbientLight(0x404040, 0.6);
@@ -172,13 +179,19 @@ const CursorFollower3D: React.FC = () => {
       window.removeEventListener('mousemove', handleMouseMove);
       window.removeEventListener('scroll', handleScroll);
       
-      if (mountRef.current && renderer.domElement) {
-        mountRef.current.removeChild(renderer.domElement);
+      if (rendererRef.current) {
+        if (mountRef.current && rendererRef.current.domElement) {
+          mountRef.current.removeChild(rendererRef.current.domElement);
+        }
+        rendererRef.current.dispose();
       }
-      
-      renderer.dispose();
     };
   }, []);
+
+  // Don't render anything if WebGL failed to initialize
+  if (webGLFailed) {
+    return null;
+  }
 
   return (
     <div 
