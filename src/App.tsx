@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Play, Pause, Volume2, VolumeX, Maximize, Home, Instagram, Mail } from 'lucide-react';
 import FloatingIcons from "./components/FloatingIcons";
+import CursorFollower3D from "./components/CursorFollower3D";
 
 interface VideoPlayerProps {
   src: string;
@@ -223,6 +224,7 @@ function App() {
   return (
     <div className="min-h-screen bg-gray-900 text-white">
       <FloatingNavbar /> 
+      <CursorFollower3D />
       
       {/* Hero Section */}
    <section id="home" className="relative min-h-screen overflow-hidden bg-gradient-to-br from-[#000000] via-[#010017] to-[#000000] text-white">
